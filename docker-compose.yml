@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+  mysql-final:
+    image: mysql:latest
+    container_name: mysql-final
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=final_db
+    ports:
+      - "3307:3306"
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost", "-uroot", "-proot" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    networks:
+      - my-network
+    volumes:
+      - /var/lib/mysql
+
+
+
+  practice:
+    build: .
+    container_name: app-container
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    ports:
+      - "8080:8080"
+    networks:
+      - my-network
+
+
+
+networks:
+  my-network:
